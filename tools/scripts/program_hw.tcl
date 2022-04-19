@@ -6,7 +6,7 @@ open_project $dest_dir/$proj_name.xpr
 
 update_compile_order -fileset sources_1
 
-open_hw
+open_hw_manager
 connect_hw_server
 open_hw_target
 

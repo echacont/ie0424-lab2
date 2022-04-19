@@ -9,7 +9,7 @@ cd $dest_dir
 puts "INFO: Creating new project in $dest_dir"
 
 # Create project
-create_project $proj_name $dest_dir
+create_project -force $proj_name $dest_dir
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -54,7 +54,7 @@ set_property top system [current_fileset]
 add_files -fileset constrs_1 -norecurse $src_dir/constraints/system.xdc
 
 # Add simulation sources
-add_files -fileset sim_1 $src_dir/picorv32/scripts/vivado/system_tb.v
+add_files -fileset sim_1 $src_dir/verilog/system_tb.v
 add_files -fileset sim_1 $src_dir/firmware/firmware.hex
 
 set_property top system_tb [get_filesets sim_1]

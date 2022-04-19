@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # USE
-# ./create_project.sh -s source/path -d destiny/path -n proj_name -p part -bp board_part -is -ir -ip
+# ./create_project.sh -s source/path -d destiny/path -n name -p part -bp board_part -is -ir -ip
 # ./create_project.sh --source source/path --destiny destiny/path --name proj_name --part part --board-part board_part --is-create --is-run --is-program
 #
 # To create project and run synthesis, implementation and bitgen
@@ -73,7 +73,7 @@ done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
 export SOURCE="$(realpath ${SOURCE})"
-export DESTINY="$(realpath ${DESTINY})"
+export DESTINY="$(realpath ${DESTINY})/${NAME}"
 
 echo "SOURCE  = "${SOURCE}""
 echo "DESTINY = "${DESTINY}""
@@ -84,25 +84,25 @@ echo "mkdir -p ${DESTINY}"
 mkdir -p ${DESTINY}
 
 if [ "$is_create" -eq "1" ]; then
-  cd ${SOURCE}/firmware
-  make
+  #cd ${SOURCE}/firmware
+  #make
   cd $curwordir
   mkdir -p logs
-  vivado -nojournal -log logs/create_project.log -mode batch -source create_project.tcl
+  vivado -nojournal -log logs/create_project.log -mode batch -source scripts/create_project.tcl
 fi
 
 if [ "$is_run" -eq "1" ]; then
-  cd ${SOURCE}/firmware
-  make
+  #cd ${SOURCE}/firmware
+  #make
   cd $curwordir
   mkdir -p logs
-  vivado -nojournal -log logs/run_project.log -mode batch -source run_project.tcl
+  vivado -nojournal -log logs/run_project.log -mode batch -source scripts/run_project.tcl
 fi
 
 if [ "$is_program" -eq "1" ]; then
   bitstream_file="${DESTINY}/${NAME}.runs/impl_1/system.bit"
-  sed -i -E "s%set_property\ PROGRAM\.FILE \{(.*?)\}\s*\[get_hw_devices\s+(.*?)]%set_property PROGRAM.FILE {${bitstream_file}} [get_hw_devices \2]%" program_hw.tcl
+  sed -i -E "s%set_property\ PROGRAM\.FILE \{(.*?)\}\s*\[get_hw_devices\s+(.*?)]%set_property PROGRAM.FILE {${bitstream_file}} [get_hw_devices \2]%" scripts/program_hw.tcl
   mkdir -p logs
-  vivado -nojournal -log logs/program_hardware.log -mode batch -source program_hw.tcl
-  sed -i -E "s%set_property\ PROGRAM\.FILE \{(.*?)\}\s*\[get_hw_devices\s+(.*?)]%set_property PROGRAM.FILE {path/to/bitfile} [get_hw_devices \2]%" program_hw.tcl
+  vivado -nojournal -log logs/program_hardware.log -mode batch -source scripts/program_hw.tcl
+  sed -i -E "s%set_property\ PROGRAM\.FILE \{(.*?)\}\s*\[get_hw_devices\s+(.*?)]%set_property PROGRAM.FILE {path/to/bitfile} [get_hw_devices \2]%" scripts/program_hw.tcl
 fi
